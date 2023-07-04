@@ -34,7 +34,9 @@ try {
       "metadata": {
           "title": metadata.title,
           "description": metadata.description,
-          "publication_date": datetime.today().strftime('%Y-%m-%d'),
+          "publication_date": new Date()
+                                .toISOString()
+                                .split("T")[0],
           "creators": [
               {
                   "person_or_org": {
