@@ -17,9 +17,6 @@ async function run() {
     let draft = await fetch(new URL(`/api/records/${ROOT_RECORD}/draft`, INVENIO_API_URL), {
       headers: authHeaders
     }).then(res => res.json())
-
-    console.log(draft)
-
     if (draft.status === 404) {
       draft = await fetch(new URL(`/api/records/${ROOT_RECORD}/versions`, INVENIO_API_URL), {
         headers: authHeaders,
@@ -27,14 +24,12 @@ async function run() {
       }).then(res => res.json())
     }
 
-    console.log(draft)
-
     // Update record using metadata
     metadataBuffer = fs.readFileSync(METADATA_FILE)
     metadata = JSON.parse(metadataBuffer)
     recordData = {
         "access": {"record": "public", "files": "public"},
-        // "files": {"enabled": False},
+        "files": {"enabled": False}, // Only when no files are present
         "metadata": {
             "title": metadata.title,
             "description": metadata.description,
@@ -53,7 +48,6 @@ async function run() {
             "resource_type": {"id": "dataset"},
         },
     }
-    console.log(metadata)
     draft = await fetch(new URL(`/api/records/${draft.id}/draft`, INVENIO_API_URL), {
       headers: {
         'Content-Type': 'application/json',
@@ -63,16 +57,17 @@ async function run() {
       body: JSON.stringify(recordData)
     }).then(res => res.json())
 
-    console.log(draft)
-
+    // Publish Draft
     record = await fetch(new URL(`/api/records/${draft.id}/draft/actions/publish`, INVENIO_API_URL), {
       headers: authHeaders,
       method: 'POST'
     }).then(res => res.json())
 
-    console.log(record)
+    // Generate error in case of failure
+    if (typeof record.status !== 'number') throw new Error('Failed to publish record.')
 
-    core.setOutput('record', new URL(`/records/${record.id}`, INVENIO_API_URL).toString())
+    // Output link 
+    core.setOutput('record', record.links.self)
   } catch (error) {
     core.setFailed(error.message);
   }
