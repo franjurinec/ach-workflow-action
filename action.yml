@@ -1,0 +1,22 @@
+name: 'ACH Workflow Action'
+description: 'Execute SLURM batch job and publish results.'
+inputs:
+  invenio-url:
+    description: 'URL of the target InvenioRDM instance.'
+    required: true
+  invenio-key:
+    description: 'API key for the target InvenioRDM instance.'
+    required: true
+  invenio-root-id:
+    description: 'ID of the root InvenioRDM record.'
+    required: true
+  metadata-file:
+    description: 'Path of the metadata file.'
+    required: true
+    default: './tmp/meta/metadata.json'
+outputs:
+  record:
+    description: 'URL of the newly created InvenioRDM record.'
+runs:
+  using: 'node16'
+  main: 'index.js'
