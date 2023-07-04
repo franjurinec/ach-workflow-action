@@ -34,7 +34,10 @@ async function run() {
     metadata = JSON.parse(metadataBuffer)
     console.log(metadata)
     draft = await fetch(new URL(`/api/records/${draft.id}/draft`, INVENIO_API_URL), {
-      headers: authHeaders,
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders
+      },
       method: 'PUT',
       body: {
         "access": {"record": "public", "files": "public"},
@@ -62,10 +65,7 @@ async function run() {
     console.log(draft)
 
     record = await fetch(new URL(`/api/records/${draft.id}/draft/actions/publish`, INVENIO_API_URL), {
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeaders
-      },
+      headers: authHeaders,
       method: 'POST'
     }).then(res => res.json())
 
