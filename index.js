@@ -29,7 +29,7 @@ async function run() {
     metadata = JSON.parse(metadataBuffer)
     recordData = {
         "access": {"record": "public", "files": "public"},
-        "files": {"enabled": False}, // Only when no files are present
+        "files": {"enabled": false}, // Only when no files are present
         "metadata": {
             "title": metadata.title,
             "description": metadata.description,
