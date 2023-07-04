@@ -62,7 +62,10 @@ async function run() {
     console.log(draft)
 
     record = await fetch(new URL(`/api/records/${draft.id}/draft/actions/publish`, INVENIO_API_URL), {
-      headers: authHeaders,
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders
+      },
       method: 'POST'
     }).then(res => res.json())
 
