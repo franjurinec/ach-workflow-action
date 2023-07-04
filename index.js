@@ -32,14 +32,7 @@ async function run() {
     // Update record using metadata
     metadataBuffer = fs.readFileSync(METADATA_FILE)
     metadata = JSON.parse(metadataBuffer)
-    console.log(metadata)
-    draft = await fetch(new URL(`/api/records/${draft.id}/draft`, INVENIO_API_URL), {
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeaders
-      },
-      method: 'PUT',
-      body: {
+    recordData = {
         "access": {"record": "public", "files": "public"},
         // "files": {"enabled": False},
         "metadata": {
@@ -60,6 +53,14 @@ async function run() {
             "resource_type": {"id": "dataset"},
         },
     }
+    console.log(metadata)
+    draft = await fetch(new URL(`/api/records/${draft.id}/draft`, INVENIO_API_URL), {
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders
+      },
+      method: 'PUT',
+      body: JSON.stringify(recordData)
     }).then(res => res.json())
 
     console.log(draft)
