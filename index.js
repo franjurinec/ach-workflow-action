@@ -24,7 +24,8 @@ try {
 
   // Update record using metadata
   metadataBuffer = fs.readFileSync(METADATA_FILE)
-  metadata = metadataBuffer.toString()
+  metadata = JSON.parse(metadataBuffer)
+  console.log(metadata)
   draft = fetch(new URL(`/api/records/${draft.id}/versions`, INVENIO_API_URL), {
     headers: authHeaders,
     method: 'PUT',
