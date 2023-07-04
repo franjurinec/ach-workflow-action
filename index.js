@@ -33,7 +33,7 @@ async function run() {
     metadataBuffer = fs.readFileSync(METADATA_FILE)
     metadata = JSON.parse(metadataBuffer)
     console.log(metadata)
-    draft = await fetch(new URL(`/api/records/${draft.id}/versions`, INVENIO_API_URL), {
+    draft = await fetch(new URL(`/api/records/${draft.id}/draft`, INVENIO_API_URL), {
       headers: authHeaders,
       method: 'PUT',
       body: {
@@ -61,7 +61,7 @@ async function run() {
 
     console.log(draft)
 
-    record = await fetch(new URL(`/api/records/${draft.id}/publish`, INVENIO_API_URL), {
+    record = await fetch(new URL(`/api/records/${draft.id}/draft/actions/publish`, INVENIO_API_URL), {
       headers: authHeaders,
       method: 'POST'
     }).then(res => res.json())
