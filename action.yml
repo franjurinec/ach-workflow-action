@@ -1,5 +1,5 @@
-name: 'ACH Workflow Action'
-description: 'Execute SLURM batch job and publish results.'
+name: 'ACH InvenioRDM Action'
+description: 'Create InvenioRDM record from given metadata file.'
 inputs:
   invenio-url:
     description: 'URL of the target InvenioRDM instance.'
