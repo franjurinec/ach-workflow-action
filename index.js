@@ -64,7 +64,7 @@ async function run() {
     }).then(res => res.json())
 
     // Generate error in case of failure
-    if (typeof record.status !== 'number') throw new Error('Failed to publish record.')
+    if (typeof record.status === 'number') throw new Error('Failed to publish record.')
 
     // Output link 
     core.setOutput('record', record.links.self)
