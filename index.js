@@ -28,7 +28,7 @@ async function run() {
     // Prepare Metadata
     metadata = JSON.parse(fs.readFileSync(path.join(METADATA_DIR, 'metadata.json')))
     metadata.source = JSON.parse(fs.readFileSync(path.join(METADATA_DIR, 'source_meta.json')))
-    metadata.source.pulses = fs.readDirSync(path.join(METADATA_DIR, 'in_pulses')).map((file) => JSON.parse(fs.readFileSync(file)))
+    metadata.source.pulses = fs.readdirSync(path.join(METADATA_DIR, 'in_pulses')).map((file) => JSON.parse(fs.readFileSync(file)))
     metadata.output = JSON.parse(fs.readFileSync(path.join(METADATA_DIR, 'output_meta.json')))
     recordData = {
         "access": {"record": "public", "files": "public"},
