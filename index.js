@@ -32,7 +32,7 @@ async function run() {
     metadata.output = JSON.parse(fs.readFileSync(path.join(METADATA_DIR, 'output_meta.json')))
     recordData = {
         "access": {"record": "public", "files": "public"},
-        "files": {"enabled": false}, // Only when no files are present
+        "files": {"enabled": true}, // Only when no files are present
         "metadata": {
             "title": metadata.title,
             "description": `${metadata.description} \n ${metadata.output["access_instructions"]}`,
