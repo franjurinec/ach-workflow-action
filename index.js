@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const fetch = require('node-fetch')
 const fs = require('fs');
+const path = require('path')
 
 async function run() {
   try {
@@ -24,15 +25,17 @@ async function run() {
       }).then(res => res.json())
     }
 
-    // Update record using metadata
-    metadataBuffer = fs.readFileSync(METADATA_FILE)
-    metadata = JSON.parse(metadataBuffer)
+    // Prepare Metadata
+    metadata = JSON.parse(fs.readFileSync(path.join(METADATA_DIR, 'metadata.json')))
+    metadata.source = JSON.parse(fs.readFileSync(path.join(METADATA_DIR, 'source_meta.json')))
+    metadata.source.pulses = fs.readDirSync(path.join(METADATA_DIR, 'in_pulses')).map((file) => JSON.parse(fs.readFileSync(file)))
+    metadata.output = JSON.parse(fs.readFileSync(path.join(METADATA_DIR, 'output_meta.json')))
     recordData = {
         "access": {"record": "public", "files": "public"},
         "files": {"enabled": false}, // Only when no files are present
         "metadata": {
             "title": metadata.title,
-            "description": metadata.description,
+            "description": `${metadata.description} \n ${metadata.output["access_instructions"]}`,
             "publication_date": new Date()
                                   .toISOString()
                                   .split("T")[0],
@@ -48,6 +51,8 @@ async function run() {
             "resource_type": {"id": "dataset"},
         },
     }
+
+    // Update Draft
     draft = await fetch(new URL(`/api/records/${draft.id}/draft`, INVENIO_API_URL), {
       headers: {
         'Content-Type': 'application/json',
@@ -56,6 +61,30 @@ async function run() {
       method: 'PUT',
       body: JSON.stringify(recordData)
     }).then(res => res.json())
+
+    // Attach Metadata File
+    await fetch(new URL(`/api/records/${draft.id}/draft/files`, INVENIO_API_URL), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders
+      },
+      body: JSON.stringify(['metadata.json'])
+    })
+
+    await fetch(new URL(`/api/records/${draft.id}/draft/files/metadata.json/content`, INVENIO_API_URL), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        ...authHeaders
+      },
+      body: Buffer.from(JSON.stringify(metadata, null, 4))
+    })
+
+    await fetch(new URL(`/api/records/${draft.id}/draft/files/metadata.json/commit`, INVENIO_API_URL), {
+      method: 'POST',
+      headers: authHeaders
+    })
 
     // Publish Draft
     record = await fetch(new URL(`/api/records/${draft.id}/draft/actions/publish`, INVENIO_API_URL), {

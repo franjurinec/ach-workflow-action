@@ -10,10 +10,9 @@ inputs:
   invenio-root-id:
     description: 'ID of the root InvenioRDM record.'
     required: true
-  metadata-file:
-    description: 'Path of the metadata file.'
+  metadata-dir:
+    description: 'Path of the metadata directory.'
     required: true
-    default: './tmp/meta/metadata.json'
 outputs:
   record:
     description: 'URL of the newly created InvenioRDM record.'
