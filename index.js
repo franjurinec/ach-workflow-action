@@ -69,7 +69,7 @@ async function run() {
         'Content-Type': 'application/json',
         ...authHeaders
       },
-      body: JSON.stringify(['metadata.json'])
+      body: JSON.stringify([{'key': 'metadata.json'}])
     })
 
     await fetch(new URL(`/api/records/${draft.id}/draft/files/metadata.json/content`, INVENIO_API_URL), {
