@@ -8,7 +8,7 @@ async function run() {
     const INVENIO_API_URL = core.getInput('invenio-url');
     const INVENIO_API_KEY = core.getInput('invenio-key');
     const ROOT_RECORD = core.getInput('invenio-root-id');
-    const METADATA_FILE = core.getInput('metadata-file');
+    const METADATA_DIR = core.getInput('metadata-dir');
 
     const authHeaders = {
       Authorization: `Bearer ${INVENIO_API_KEY}`
